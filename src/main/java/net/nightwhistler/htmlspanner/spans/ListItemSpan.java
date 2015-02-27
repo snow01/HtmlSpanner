@@ -35,6 +35,7 @@ import net.nightwhistler.htmlspanner.HtmlSpanner;
  */
 public class ListItemSpan implements LeadingMarginSpan {
     private final int mNumber;
+    private final String listStyle;
 
     private static final int BULLET_RADIUS = 3;
     private static final int NUMBER_RADIUS = 5;
@@ -44,15 +45,17 @@ public class ListItemSpan implements LeadingMarginSpan {
 
     public ListItemSpan() {
         mNumber = -1;
+        listStyle = null;
     }
 
-    public ListItemSpan(int number) {
+    public ListItemSpan(String listStyle, int number) {
         mNumber = number;
+        this.listStyle = listStyle;
     }
 
     public int getLeadingMargin(boolean first) {
         if (mNumber != -1) {
-            return 2 * NUMBER_RADIUS + STANDARD_GAP_WIDTH;
+            return 2 * NUMBER_RADIUS + STANDARD_GAP_WIDTH + 40;
         } else {
             return 2 * BULLET_RADIUS + STANDARD_GAP_WIDTH;
         }
@@ -67,12 +70,23 @@ public class ListItemSpan implements LeadingMarginSpan {
             p.setStyle(Paint.Style.FILL);
 
             if (mNumber != -1) {
-                c.drawText(mNumber + ".", x + dir, baseline, p);
+                c.drawText(getListNumber() + ")", x + dir, baseline, p);
             } else {
                 c.drawText("\u2022", x + dir, baseline, p);
             }
 
             p.setStyle(style);
+        }
+    }
+
+    private String getListNumber() {
+        switch (listStyle) {
+            case "upper-alpha":
+                return String.valueOf((char)('A' + mNumber - 1));
+            case "lower-alpha":
+                return String.valueOf((char)('a' + mNumber - 1));
+            default:
+                return String.valueOf(mNumber);
         }
     }
 }

@@ -33,6 +33,8 @@ import android.text.SpannableStringBuilder;
  */
 public class ListItemHandler extends TagNodeHandler {
 
+    private static final String DefaultListStyle = "decimal";
+
 	private int getMyIndex(TagNode node) {
 		if (node.getParent() == null) {
 			return -1;
@@ -74,7 +76,11 @@ public class ListItemHandler extends TagNodeHandler {
 		}
 
 		if ("ol".equals(getParentName(node))) {
-			ListItemSpan bSpan = new ListItemSpan(getMyIndex(node));
+            String listStyle = node.getParent().getAttributeByName("listStyle");
+            if (listStyle == null) {
+                listStyle = DefaultListStyle;
+            }
+			ListItemSpan bSpan = new ListItemSpan(listStyle, getMyIndex(node));
             spanStack.pushSpan(bSpan, start, end);
 		} else if ("ul".equals(getParentName(node))) {
 			// Unicode bullet character.
